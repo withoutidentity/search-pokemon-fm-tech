@@ -1,0 +1,9 @@
+.next
+.swc/
+node_modules
+coverage
+.env*.local
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
