@@ -12,6 +12,7 @@ import { GET_POKEMON } from '@/graphql/queries/getPokemon';
 import { PokemonCard } from '@/components/pokemon/PokemonCard';
 import { NotFound } from '@/components/pokemon/NotFound';
 import { SearchInput } from '@/components/search/SearchInput';
+import { ProjectLogo } from '@/components/ui/ProjectLogo';
 import { Spinner } from '@/components/ui/Spinner';
 
 interface PokemonDetailsProps {
@@ -69,7 +70,7 @@ function PokemonDetailsComponent({ name }: PokemonDetailsProps): JSX.Element {
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <Link className="text-lg font-bold text-slate-950" href="/">
-            Home
+            <ProjectLogo />
           </Link>
           <SearchInput syncUrl={false} />
         </div>
