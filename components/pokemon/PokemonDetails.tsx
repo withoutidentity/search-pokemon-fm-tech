@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { useQuery } from '@apollo/client';
 
 import type {
@@ -13,7 +13,6 @@ import { PokemonCard } from '@/components/pokemon/PokemonCard';
 import { NotFound } from '@/components/pokemon/NotFound';
 import { SearchInput } from '@/components/search/SearchInput';
 import { Spinner } from '@/components/ui/Spinner';
-import { saveRecentPokemonSearch } from '@/lib/pokemon/recentSearches';
 
 interface PokemonDetailsProps {
   name: string;
@@ -30,12 +29,6 @@ function PokemonDetailsComponent({ name }: PokemonDetailsProps): JSX.Element {
     },
     fetchPolicy: 'cache-first',
   });
-
-  useEffect((): void => {
-    if (data?.pokemon?.name) {
-      saveRecentPokemonSearch(data.pokemon.name);
-    }
-  }, [data?.pokemon?.name]);
 
   if (loading) {
     return (

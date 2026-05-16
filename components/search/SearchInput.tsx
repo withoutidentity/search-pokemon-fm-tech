@@ -4,7 +4,10 @@ import { useRouter } from 'next/navigation';
 import { FormEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useSearchParam } from '@/lib/hooks/useSearchParam';
-import { getRecentPokemonSearches } from '@/lib/pokemon/recentSearches';
+import {
+  getRecentPokemonSearches,
+  saveRecentPokemonSearch,
+} from '@/lib/pokemon/recentSearches';
 
 interface SearchInputProps {
   syncUrl?: boolean;
@@ -52,6 +55,7 @@ function SearchInputComponent({ syncUrl = true }: SearchInputProps): JSX.Element
       const normalizedName = name.trim().toLowerCase();
 
       if (normalizedName) {
+        saveRecentPokemonSearch(normalizedName);
         router.push(`/pokemon/${encodeURIComponent(normalizedName)}`);
       }
     },

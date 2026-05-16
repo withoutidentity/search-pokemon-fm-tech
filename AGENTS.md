@@ -4,7 +4,7 @@
 
 `search-pokemon-fm-tech` is a Next.js 14 App Router Pokemon search app built with TypeScript, Apollo Client, GraphQL, Tailwind CSS, Jest, and React Testing Library.
 
-The app lets users search Pokemon by name, navigate to a detail page, inspect stats and attacks, click through evolutions, and reuse recent successful searches through an in-app suggestion dropdown.
+The app lets users search Pokemon by name, navigate to a detail page, inspect stats and attacks, click through evolutions, and reuse recent searches submitted through the search input.
 
 ## Current Stack
 
@@ -75,7 +75,7 @@ The dynamic detail page:
 - Runs the GraphQL Pokemon query through Apollo `useQuery`.
 - Uses Apollo `cache-first` so evolution navigation can reuse cached Pokemon data.
 - Shows loading, error, not found, and success states.
-- Persists successful Pokemon names to localStorage recent-search history.
+- Does not write to localStorage recent-search history. Evolution clicks and direct route loads should not affect recent searches.
 
 Static params currently pre-render:
 
@@ -116,9 +116,9 @@ The browser's native autocomplete is disabled with `autoComplete="off"`.
 
 The app provides its own suggestion dropdown:
 
-- Suggestions come from successful Pokemon detail loads.
+- Suggestions come only from searches submitted through `SearchInput`.
 - Data is stored in localStorage under `recentPokemonSearches`.
-- The legacy `lastPokemon` key is still written for compatibility, but the input no longer auto-restores it.
+- The legacy `lastPokemon` key is still written by the recent-search helper for compatibility, but the input no longer auto-restores it.
 - Clearing the input should keep it clear; it must not repopulate from `lastPokemon`.
 - Suggestions are filtered by the current input text.
 - Clicking a suggestion navigates to that Pokemon detail page.
@@ -183,7 +183,7 @@ Coordinates detail-page data loading and state:
 - error: request failed panel
 - not found: `NotFound`
 - success: header search + `PokemonCard`
-- saves successful Pokemon names to recent-search storage
+- does not save recent-search storage
 
 ### `PokemonCard`
 
@@ -327,7 +327,7 @@ Users can:
 - See loading state while Pokemon details are being fetched.
 - See an error state if the request fails.
 - See a not-found state if the Pokemon does not exist.
-- Reuse recent successful Pokemon searches through the custom suggestion dropdown.
+- Reuse recent SearchInput submissions through the custom suggestion dropdown.
 - Clear the search input without it being repopulated by the previous Pokemon name.
 
 ## Current Project Capabilities
@@ -349,7 +349,7 @@ Developers can:
 - The app does not currently use server-side Apollo prefetching.
 - `generateStaticParams` only lists three starter Pokemon.
 - Recent-search suggestions are local to the user's browser.
-- There is no full autocomplete API search; suggestions only come from successfully opened Pokemon detail pages.
+- There is no full autocomplete API search; suggestions only come from SearchInput submissions stored in the browser.
 - `usePokemonSearch` is present but not currently used by the rendered pages.
 - `ErrorBoundary` is present but not currently mounted around page content.
 
@@ -364,4 +364,3 @@ When editing this project:
 - Use `next/image` for Pokemon images.
 - Prefer small, focused components matching the existing folder structure.
 - Run `npm test`, `npm run lint`, and `npm run build` before considering the change done.
-
