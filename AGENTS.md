@@ -4,7 +4,7 @@
 
 `search-pokemon-fm-tech` is a Next.js 14 App Router Pokemon search app built with TypeScript, Apollo Client, GraphQL, Tailwind CSS, Jest, and React Testing Library.
 
-The app lets users search Pokemon by name, navigate to a detail page, inspect stats and attacks, click through evolutions, and reuse recent searches submitted through the search input.
+The app lets users search Pokemon by name, navigate to a detail page, inspect stats and attacks, click through evolutions, and use autocomplete suggestions from the Pokemon name list.
 
 ## Current Stack
 
@@ -104,7 +104,7 @@ Important decision:
 - Do not reintroduce `router.replace` for debounce search query updates unless the focus-loss behavior is explicitly handled.
 - `router.push` remains correct for real navigation to Pokemon detail pages.
 
-## Recent Search Suggestions
+## Search Suggestions
 
 Files:
 
@@ -116,8 +116,11 @@ The browser's native autocomplete is disabled with `autoComplete="off"`.
 
 The app provides its own suggestion dropdown:
 
-- Suggestions come only from searches submitted through `SearchInput`.
-- Data is stored in localStorage under `recentPokemonSearches`.
+- When the input has text, suggestions come from the full Pokemon name list loaded with `GET_POKEMON_NAMES`.
+- Name suggestions use prefix matching, so typing `b` shows Pokemon whose names start with `b`.
+- The name list is fetched with Apollo `cache-first`, so it is stored in Apollo `InMemoryCache` for the current browser tab.
+- When the input is empty, suggestions come from searches submitted through `SearchInput`.
+- Recent-search data is stored in localStorage under `recentPokemonSearches`.
 - The legacy `lastPokemon` key is still written by the recent-search helper for compatibility, but the input no longer auto-restores it.
 - Clearing the input should keep it clear; it must not repopulate from `lastPokemon`.
 - Suggestions are filtered by the current input text.

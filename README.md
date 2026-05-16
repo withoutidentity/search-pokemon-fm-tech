@@ -20,10 +20,29 @@ A Pokemon search application built with Next.js, TypeScript, Apollo Client, Grap
 - View Pokemon image, number, types, HP, CP, height, and weight
 - View fast and special attacks sorted by damage
 - Navigate between Pokemon evolutions
-- Custom recent-search suggestions from searches submitted through the search input
+- Autocomplete suggestions from the full Pokemon name list
+- Recent-search suggestions when the search input is empty
 - Loading, error, and not-found states
 - Apollo cache configured by Pokemon name for smoother navigation
 - Responsive UI with Tailwind CSS
+
+## Project Structure
+
+```txt
+search-pokemon-fm-tech/
+├── app/                    # Next.js App Router pages, layout, global styles, app icon
+│   ├── page.tsx            # Home search page
+│   └── pokemon/[name]/     # Pokemon detail route
+├── components/             # Reusable React components
+│   ├── pokemon/            # Detail, card, attacks, evolutions, not-found UI
+│   ├── search/             # Search input and tests
+│   └── ui/                 # Shared UI pieces
+├── graphql/                # GraphQL queries and typed query shapes
+├── lib/                    # Apollo setup, hooks, and local utilities
+├── types/                  # Shared TypeScript interfaces
+├── __tests__/              # Jest tests and Pokemon mocks
+└── public/                 # Static assets
+```
 
 ## Installation & Setup
 
@@ -64,4 +83,3 @@ npm test
 npm run lint
 npm run build
 ```
-

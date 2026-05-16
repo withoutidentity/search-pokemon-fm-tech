@@ -1,8 +1,14 @@
 'use client';
 
+import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/navigation';
 import { FormEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
+import type {
+  GetPokemonNamesQuery,
+  GetPokemonNamesQueryVariables,
+} from '@/graphql/__generated__/graphql';
+import { GET_POKEMON_NAMES } from '@/graphql/queries/getPokemon';
 import { useSearchParam } from '@/lib/hooks/useSearchParam';
 import {
   getRecentPokemonSearches,
@@ -16,6 +22,15 @@ interface SearchInputProps {
 function SearchInputComponent({ syncUrl = true }: SearchInputProps): JSX.Element {
   const router = useRouter();
   const { value, setValue } = useSearchParam('q');
+  const { data: pokemonNamesData } = useQuery<
+    GetPokemonNamesQuery,
+    GetPokemonNamesQueryVariables
+  >(GET_POKEMON_NAMES, {
+    variables: {
+      first: 151,
+    },
+    fetchPolicy: 'cache-first',
+  });
   const [inputValue, setInputValue] = useState<string>(value);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [recentPokemon, setRecentPokemon] = useState<string[]>([]);
@@ -38,6 +53,11 @@ function SearchInputComponent({ syncUrl = true }: SearchInputProps): JSX.Element
     };
   }, [inputValue, setValue, syncUrl]);
 
+  const pokemonNames = useMemo(
+    (): string[] => pokemonNamesData?.pokemons.map((pokemon) => pokemon.name) ?? [],
+    [pokemonNamesData?.pokemons],
+  );
+
   const visibleSuggestions = useMemo((): string[] => {
     const normalizedInput = inputValue.trim().toLowerCase();
 
@@ -45,10 +65,18 @@ function SearchInputComponent({ syncUrl = true }: SearchInputProps): JSX.Element
       return recentPokemon;
     }
 
-    return recentPokemon.filter((pokemonName) =>
-      pokemonName.toLowerCase().includes(normalizedInput),
+    const matchedNames = pokemonNames.filter((pokemonName) =>
+      pokemonName.toLowerCase().startsWith(normalizedInput),
     );
-  }, [inputValue, recentPokemon]);
+
+    if (matchedNames.length > 0) {
+      return matchedNames;
+    }
+
+    return recentPokemon.filter((pokemonName) =>
+      pokemonName.toLowerCase().startsWith(normalizedInput),
+    );
+  }, [inputValue, pokemonNames, recentPokemon]);
 
   const navigateToPokemon = useCallback(
     (name: string): void => {
@@ -114,7 +142,7 @@ function SearchInputComponent({ syncUrl = true }: SearchInputProps): JSX.Element
           value={inputValue}
         />
         {isFocused && visibleSuggestions.length > 0 ? (
-          <div className="absolute left-0 right-0 top-full z-10 mt-2 rounded-md border border-slate-200 bg-white py-1 shadow-soft">
+          <div className="absolute left-0 right-0 top-full z-10 mt-2 max-h-72 overflow-y-auto rounded-md border border-slate-200 bg-white py-1 shadow-soft">
             {visibleSuggestions.map((pokemonName) => (
               <button
                 className="block w-full px-4 py-2 text-left text-sm font-medium text-slate-700 transition hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 focus:outline-none"

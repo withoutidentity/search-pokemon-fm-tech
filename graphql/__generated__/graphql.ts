@@ -7,3 +7,16 @@ export interface GetPokemonQueryVariables {
 export interface GetPokemonQuery {
   pokemon: Pokemon | null;
 }
+
+export interface PokemonNameResult {
+  id: string;
+  name: string;
+}
+
+export interface GetPokemonNamesQueryVariables {
+  first: number;
+}
+
+export interface GetPokemonNamesQuery {
+  pokemons: PokemonNameResult[];
+}
